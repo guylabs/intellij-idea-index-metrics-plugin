@@ -4,9 +4,9 @@ import com.github.guylabs.intellijideaindexmetricsplugin.services.IndexDataStora
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 public class IndexTable {
 
@@ -29,11 +29,12 @@ public class IndexTable {
         var totalIndexTime = state.getTotalIndexTime();
         total.setText("Total index time: " + totalIndexTime);
 
-        Map<Long, Map<String, String>> indexExecutions = state.getIndexExecutions();
-        ArrayList<Long> sessionIds = new ArrayList<>(indexExecutions.keySet());
-        Collections.sort(sessionIds);
-        Object[] columnNames = {"#", "Reason", "Duration", "WasFull", "ScansFileDuration"};
-        Object[] labels = {"#", "indexingReason", "totalTime", "wasFullIndexing", "scanFilesDuration"};
+        Map<String, Map<String, String>> indexExecutions = state.getIndexExecutions();
+        Object[] columnNames = {"#", "Project","StartTime", "Reason", "Duration", "WasFull", "ScansFileDuration"};
+        Object[] labels = {"#", "project","updatingStart","indexingReason", "totalTime", "wasFullIndexing", "scanFilesDuration"};
+
+        ArrayList<Map<String, String>> executions = new ArrayList<>(indexExecutions.values());
+        executions.sort(Comparator.<Map<String, String>, Long>comparing(m -> Long.parseLong(m.get("updatingStart"))).reversed());
 
         var model = new AbstractTableModel() {
             public String getColumnName(int column) {
@@ -41,7 +42,7 @@ public class IndexTable {
             }
 
             public int getRowCount() {
-                return sessionIds.size();
+                return executions.size() + 1;
             }
 
             public int getColumnCount() {
@@ -49,12 +50,18 @@ public class IndexTable {
             }
 
             public Object getValueAt(int row, int col) {
-                var sessionId = sessionIds.get(row);
-                if (col == 0) {
-                    return sessionId;
+                if (row == 0) {
+                    return getColumnName(col);
                 }
-                Map<String, String> stats = indexExecutions.get(sessionId);
-                return stats.get(labels[col]);
+                if (col == 0) {
+                    return row;
+                }
+                var execution = executions.get(row-1);
+                var value = execution.get(labels[col]);
+                if (col == 1) {
+                    return Instant.ofEpochMilli(Long.parseLong(value)).truncatedTo(ChronoUnit.SECONDS);
+                }
+                return value;
             }
 
             public boolean isCellEditable(int row, int column) {
@@ -67,6 +74,7 @@ public class IndexTable {
         };
 
         statisticsTable.setModel(model);
+        statisticsTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     }
 
     public JPanel getContent() {
