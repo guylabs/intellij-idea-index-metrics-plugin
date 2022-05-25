@@ -15,4 +15,9 @@
             serviceImplementation="com.github.guylabs.intellijideaindexmetricsplugin.services.IndexDataStorage"/>
     </extensions>
 
+
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="Sample Calendar" secondary="true" icon="AllIcons.General.Modified" anchor="right"
+                    factoryClass="com.github.guylabs.intellijideaindexmetricsplugin.MyToolWindowFactory"/>
+    </extensions>
 </idea-plugin>
