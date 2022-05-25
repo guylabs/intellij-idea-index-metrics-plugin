@@ -6,7 +6,9 @@ import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Map;
 
 public class IndexTable {
 
@@ -30,8 +32,8 @@ public class IndexTable {
         total.setText("Total index time: " + totalIndexTime);
 
         Map<String, Map<String, String>> indexExecutions = state.getIndexExecutions();
-        Object[] columnNames = {"#", "Project","StartTime", "Reason", "Duration", "WasFull", "ScansFileDuration"};
-        Object[] labels = {"#", "project","updatingStart","indexingReason", "totalTime", "wasFullIndexing", "scanFilesDuration"};
+        Object[] columnNames = {"#", "Project", "StartTime", "Reason", "Duration", "WasFull", "ScansFileDuration"};
+        Object[] labels = {"#", "project", "updatingStart", "indexingReason", "totalTime", "wasFullIndexing", "scanFilesDuration"};
 
         ArrayList<Map<String, String>> executions = new ArrayList<>(indexExecutions.values());
         executions.sort(Comparator.<Map<String, String>, Long>comparing(m -> Long.parseLong(m.get("updatingStart"))).reversed());
@@ -56,9 +58,9 @@ public class IndexTable {
                 if (col == 0) {
                     return row;
                 }
-                var execution = executions.get(row-1);
+                var execution = executions.get(row - 1);
                 var value = execution.get(labels[col]);
-                if (col == 1) {
+                if (col == 2) {
                     return Instant.ofEpochMilli(Long.parseLong(value)).truncatedTo(ChronoUnit.SECONDS);
                 }
                 return value;
