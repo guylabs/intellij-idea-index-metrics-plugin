@@ -14,6 +14,7 @@ class CaptureIndexDataListener : ProjectIndexingHistoryListener, ProjectManagerL
         val indexDataStorage: IndexDataStorage = IndexDataStorage.instance
         indexDataStorage.state.totalIndexTime += projectIndexingHistory.times.indexingDuration.seconds
         indexDataStorage.state.indexExecutions[UUID.randomUUID().toString()] = mapOf(
+            "project" to projectIndexingHistory.project.name,
             "updatingStart" to valueOf(projectIndexingHistory.times.updatingStart.toInstant().toEpochMilli()),
             "indexingReason" to projectIndexingHistory.indexingReason.toString(),
             "totalTime" to projectIndexingHistory.times.indexingDuration.seconds.toString(),
