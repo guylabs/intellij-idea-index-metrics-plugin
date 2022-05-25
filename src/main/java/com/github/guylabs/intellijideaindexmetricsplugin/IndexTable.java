@@ -30,6 +30,7 @@ public class IndexTable {
         IndexDataStorage state = instance.getState();
         var totalIndexTime = state.getTotalIndexTime();
         total.setText("Total index time: " + totalIndexTime);
+        refresh.setText("Refresh");
 
         Map<String, Map<String, String>> indexExecutions = state.getIndexExecutions();
         Object[] columnNames = {"#", "Project", "StartTime", "Reason", "Duration", "WasFull", "ScansFileDuration"};
