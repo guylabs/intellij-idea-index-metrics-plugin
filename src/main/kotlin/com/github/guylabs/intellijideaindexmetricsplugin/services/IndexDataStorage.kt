@@ -10,7 +10,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 class IndexDataStorage : PersistentStateComponent<IndexDataStorage?> {
 
     var totalIndexTime: Double = 0.0
-    var indexExecutions: MutableMap<Long, Map<String, String>> = mutableMapOf()
+    var indexExecutions: MutableMap<String, Map<String, String>> = mutableMapOf()
 
     override fun getState(): IndexDataStorage {
         return this
